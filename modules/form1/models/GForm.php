@@ -167,7 +167,6 @@ class GForm extends GActiveRecord {
 				) 
 		);
 		// 'parent' => array(self::BELONGS_TO, 'GForm', 'parentId'),
-		
 	}
 	public static function select($name) {
 		$model = self::model ()->find ( "name = '$name'" );

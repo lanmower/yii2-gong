@@ -9,34 +9,36 @@ use yii\db\ActiveRecord;
 
 class JSONField extends Behavior {
 	public $field;
+	public $output;
+
 	public function events() {
-		return [ 
-				ActiveRecord::EVENT_AFTER_FIND => 'afterFind' 
+		return [
+				ActiveRecord::EVENT_AFTER_FIND => 'json'
 		];
 	}
 	
 	private static function getVar($var) {
 		return \Yii::$app->controller->$var;
 	}
-	
 	public static function startswith($haystack, $needle) {
 		return substr ( $haystack, 0, strlen ( $needle ) ) === $needle;
 	}
-	
-	public function afterFind($event) {
+	public function json() {
 		$field = $this->field;
 		$options = $this->owner->$field;
+		
 		try {
 			$options = Json::decode ( $options, true );
 		} catch ( InvalidParamException $e ) {
-			$options = array ();
+			$options = [];
 		}
+		if(!isset($options))$options = [];
 		$model = $this->owner;
 		array_walk_recursive ( $options, function (&$value, $key) use($model, $options) {
 			if (is_string ( $value )) {
 				if (self::startswith ( $value, 'var:' )) {
 					$exp = explode ( 'var:', $value );
-					$value = self::getVar($exp[1]);
+					$value = self::getVar ( $exp [1] );
 					return;
 				} else if (self::startswith ( $value, 'url:' )) {
 					$exp = explode ( 'url:', $value );
@@ -44,11 +46,14 @@ class JSONField extends Behavior {
 					return;
 				}
 				$value = preg_replace_callback ( '/{var:([\w,.]+)}/', function ($matches) use($model, $options) {
-					$var = self::getVar($matches [1]);
+					$var = self::getVar ( $matches [1] );
 					if (isset ( $var ) || is_null ( $var ))
 						return $var;
 					else {
-						return ['Variable:' . $matches [1] . ' not found in ' . $model->name,CVarDumper::dump ( Yii::app ()->controller->vars, 3, true )];
+						return [ 
+								'Variable:' . $matches [1] . ' not found in ' . $model->name,
+								CVarDumper::dump ( Yii::app ()->controller->vars, 3, true ) 
+						];
 					}
 				}, $value );
 				$value = preg_replace_callback ( '/{url:([\w,.\/]+)}/', function ($matches) {
@@ -56,6 +61,8 @@ class JSONField extends Behavior {
 				}, $value );
 			}
 		} );
-		$this->owner->$field = $options;
+		$output = $this->output;
+		$this->owner->$output = $options;
+		return $options;
 	}
 }

@@ -20,6 +20,8 @@ class GCaptcha extends GTextField {
 			echo '</div>';
 			echo '</div>';
 		
+		
+		
         endif;
 		parent::run ();
 	}

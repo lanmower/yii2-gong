@@ -45,10 +45,10 @@ $list = GElementRenderer::renderElement ( $model, array (
 		'search' => '',
 		'publishedPosts' => false,
 		'action' => '/gong/post/post/search',
-		'searchInput' => false
+		'searchInput' => false 
 ) );
 echo CHtml::tag ( 'div', array (
 		'class' => 'replace',
-		'target' => 'search_published'
+		'target' => 'search_published' 
 ), $list );
 ?>

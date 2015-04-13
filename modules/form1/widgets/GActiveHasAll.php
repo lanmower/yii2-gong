@@ -2,9 +2,13 @@
 class GActiveHasAll extends GField {
 	public $formName;
 	public function getRelations() {
-		if (!isset ( $this->formName )) return array();
-		$ret = array(
-				$this->name => array('formName'=>$this->formName, 'type'=>"HasAllRelation")
+		if (! isset ( $this->formName ))
+			return array ();
+		$ret = array (
+				$this->name => array (
+						'formName' => $this->formName,
+						'type' => "HasAllRelation" 
+				) 
 		);
 		return $ret;
 	}
@@ -15,14 +19,11 @@ class GActiveHasAll extends GField {
 		return "";
 	}
 	public function getRules() {
-		return array();
+		return array ();
 	}
-	
 	public function getGridColumns() {
-		return array (
-		);
+		return array ();
 	}
-		
 }
 
 ?>

@@ -54,7 +54,6 @@ class GDropDown extends GField {
 		} else
 			throw new CHttpException ( 500, 'no submission set' );
 	}
-	
 	public function getGridColumns() {
 		return array (
 				array (

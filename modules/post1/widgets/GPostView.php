@@ -51,18 +51,18 @@ class GPostView extends GTag {
 	}
 	public function run() {
 		echo GPostView::coverImage ( $this->model );
-
 		
 		$edit = false;
 		if (Yii::app ()->user->can ( $this->model->edit ) || ($this->model->edit == "P" && Yii::app ()->user->id == $this->model->userId))
 			$edit = true;
 		
-		if($edit) $this->render ( 'postView', array (
-				'model' => $this->model,
-				'id' => $this->id,
-				'edit' => $edit,
-				'published' => ! $this->edit 
-		) );
+		if ($edit)
+			$this->render ( 'postView', array (
+					'model' => $this->model,
+					'id' => $this->id,
+					'edit' => $edit,
+					'published' => ! $this->edit 
+			) );
 		
 		parent::run ();
 	}

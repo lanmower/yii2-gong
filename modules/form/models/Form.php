@@ -6,7 +6,7 @@ use yii\db\ActiveRecord;
 
 /**
  * form
- * 
+ *
  * @property integer $id
  * @property string $tableName
  */

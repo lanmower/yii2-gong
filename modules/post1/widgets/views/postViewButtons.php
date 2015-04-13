@@ -50,16 +50,16 @@ if (! $published) {
 	echo CHtml::openTag ( 'span', array (
 			'class' => 'controls well' 
 	) );
-	if($edit)
-	echo BsHtml::button ( '<span> Unpublish</span>', array (
-			'class' => 'glyphicon glyphicon-thumbs-down btn btn-error unpublishBtn',
-			'onclick' => '
+	if ($edit)
+		echo BsHtml::button ( '<span> Unpublish</span>', array (
+				'class' => 'glyphicon glyphicon-thumbs-down btn btn-error unpublishBtn',
+				'onclick' => '
                     $.ajax({
                         type: "GET",
                         url: "' . $controller->createUrl ( '/gong/post/post/publish/id/' . $model->hash . '/level/P"' ) . '
                     });
                 ' 
-	) );
+		) );
 	echo CHtml::closeTag ( 'span' );
 }
 ?>

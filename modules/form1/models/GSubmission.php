@@ -202,7 +202,7 @@ class GSubmission extends GActiveRecord {
 		) );
 		if (! isset ( $form ) && isset ( $formName ))
 			throw new CHttpException ( 500, 'Form ' . $formName . ' could not be found for submission. ' );
-		GSubmission::$_tForm =  $form ;
+		GSubmission::$_tForm = $form;
 		$submission = new GSubmission ( $scenario, $form );
 		
 		return $submission;

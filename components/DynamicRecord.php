@@ -3,6 +3,9 @@
 namespace almagest\gong\components;
 
 use yii\db\ActiveRecord;
+use yii\web\HttpException;
+use yii\helpers\VarDumper;
+use almagest\gong\models\Model;
 
 /**
  * Record
@@ -12,66 +15,117 @@ use yii\db\ActiveRecord;
  */
 class DynamicRecord extends ActiveRecord {
 	public $form;
-	public $tableName;
-	public $behaviors = array();
-	public $rules = array();
-	public $scenarios = array();
-	public $attributeLabels = array();
+	public static $_sconf = [];
+	public $_conf;
+	public $settings;
+	public static $JSON_SETTINGS = [ 
+			'_conf' => [ 
+					'behaviors' => [ 
+							'JSONField' => [ 
+									'class' => 'almagest\gong\models\behaviors\JSONField',
+									'field' => 'json_settings',
+									'output' => 'settings' 
+							] 
+					] 
+			] 
+	];
+	
+	public function __construct($config = []) {
+		if (isset ( $config ['_conf'] )) {
+			self::$_sconf[] = $config ['_conf'];
+		}
+		$this->_conf = end(self::$_sconf);
+		$ret = parent::__construct ( $config );
+		// if(empty($this->_attributes)) die(VarDumper::dump(self::$_sconf));
+		return $ret;
+	}
 	
 	/**
 	 * @inheritdoc
 	 */
 	public static function tableName() {
-		return "{{%{$this->tableName}}}";
+		$sconf = end(self::$_sconf);
+		return $sconf['table'];
+	}
+	
+	public static function done() {
+		array_pop(self::$_sconf);
 	}
 	
 	/**
 	 * @inheritdoc
 	 */
 	public function behaviors() {
-		if (!isset ( $this->behaviors ) && isset($this->form))
-			$this->behaviors = $form->getModelAttributeGroup('behaviors');
-		return $this->behaviors;
+		if (isset ( $this->_conf ['behaviors'] ))
+			return $this->_conf ['behaviors'];
+		else
+			return parent::behaviors ();
 	}
 	
 	/**
 	 * @inheritdoc
 	 */
 	public function rules() {
-		if (!isset ( $this->rules ) && isset($this->form))
-			$this->rules = $form->getModelAttributeGroup('rules');
-				return parent::rules ();
+		if (isset ( $this->_conf ['rules'] ))
+			return $this->_conf ['rules'];
+		else
+			return parent::rules ();
 	}
 	
 	/**
 	 * @inheritdoc
 	 */
 	public function scenarios() {
-		if (!isset ( $this->scenarios ) && isset($this->form))
-			$this->scenarios = $form->getModelAttributeGroup('scenarios');
-		return parent::scenarios ();
+		if (isset ( $this->_conf ['scenarios'] ))
+			return $this->_conf ['scenarios'];
+		else
+			return parent::scenarios ();
 	}
-	
 	
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels()
-	{
-		if (!isset ( $this->attributeLabels ) && isset($this->form))
-			$this->attributeLabels = $form->getModelAttributeGroup('attributeLabels');
-		return parent::attributeLabels ();
+	public function attributeLabels() {
+		if (isset ( $this->_attributeLabels ))
+			return $this->_attributeLabels;
+		else
+			return parent::attributeLabels ();
 	}
-	
-	public static function forForm($formName) {
+	public static function forForm($formName, $config = []) {
 		$form = Form::model ()->find ( 'name = :name', array (
-				':name' => $formName
+				':name' => $formName 
 		) );
 		if (! isset ( $form ))
 			throw new CHttpException ( 500, 'Form ' . $formName . ' could not be found for submission. ' );
 		
-		$record = new Record(['tableName'=>$form->tableName]);
-		return $record;
+		return self::forTable ( $form->tableName, $config );
 	}
-
+	public static function forModel($name, $config = [], $controller = null) {
+		$model = DynamicRecord::forTable ( 'model', DynamicRecord::$JSON_SETTINGS )->findOne ( [ 
+				'name' => $name 
+		] );
+		
+		if (! isset ( $model ))
+			return false;
+			// the behavior will have converted json settings to a settings array
+		$settings = $model->settings;
+		
+		if (! isset ( $modelName )) {
+			$modelName = explode ( "/", $name );
+			$modelName = end ( $modelName );
+		}
+		if (! isset ( $controller )) {
+			$controller = $modelName;
+		}
+		$settings ['_conf'] ['name'] = $modelName;
+		$settings ['_conf'] ['class'] = $name;
+		$settings ['_conf'] ['controller'] = $name;
+		DynamicRecord::done();
+		return self::forTable ( $model->table, $settings );
+	}
+	public static function forTable($tableName, $config = []) {
+		$config ['_conf'] ['table'] = $tableName;
+		$ret = new DynamicRecord ( $config );
+		return $ret;
+	}
 }

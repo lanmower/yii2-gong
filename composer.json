@@ -15,8 +15,8 @@
     },
     "autoload": {
         "psr-4": {
-            "almagest\\gong\\widgets": ""
-            "almagest\\gong\\components": ""
+            "almagest\\gong\\widgets\\": "*"
+            "almagest\\gong\\components\\": "*"
         }
     }
 }

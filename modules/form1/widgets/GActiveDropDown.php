@@ -8,7 +8,7 @@ class GActiveDropDown extends GField {
 	public $select = null;
 	public $listOptions = array ();
 	public $_items;
-	public $criteria = array();
+	public $criteria = array ();
 	public $foreignKey;
 	public function getItems() {
 		if (! isset ( $this->_items )) {
@@ -41,20 +41,23 @@ class GActiveDropDown extends GField {
 		}
 		return $this->_items;
 	}
-	
 	public function getRelations() {
-		if (!isset ( $this->formName )) return array();
-		$ret = array(
-				$this->name => array('formName'=>$this->formName, 'type'=>CActiveRecord::BELONGS_TO, 'foreignKey'=>$this->foreignKey)
+		if (! isset ( $this->formName ))
+			return array ();
+		$ret = array (
+				$this->name => array (
+						'formName' => $this->formName,
+						'type' => CActiveRecord::BELONGS_TO,
+						'foreignKey' => $this->foreignKey 
+				) 
 		);
 		return $ret;
 	}
-	
 	public function run() {
 		if (isset ( $_POST [$this->name] ))
 			$this->select = $_POST [$this->name];
 		if (isset ( $this->submission )) {
-			echo CHtml::activeDropDownList ( $this->submission, $this->name, $this->getItems(), array_merge ( array (
+			echo CHtml::activeDropDownList ( $this->submission, $this->name, $this->getItems (), array_merge ( array (
 					'empty' => 'Please select' 
 			), $this->listOptions ) );
 		} else {
@@ -64,7 +67,6 @@ class GActiveDropDown extends GField {
 		}
 		parent::run ();
 	}
-	
 	public function getCell($value) {
 		if (isset ( $this->submission )) {
 			echo CHtml::form ( array (
@@ -81,7 +83,6 @@ class GActiveDropDown extends GField {
 		} else
 			throw new CHttpException ( 500, 'no submission set' );
 	}
-	
 	public function getGridColumns() {
 		return array (
 				array (
