@@ -10,13 +10,21 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
+<<<<<<< HEAD
 php composer.phar require --prefer-dist almagestfraternite/yii-gong "*"
+=======
+php composer.phar require --prefer-dist almagestfraternite/yii2-gong "*"
+>>>>>>> b04bbaca176c125a3313a177bfbd0c2ae01b97c4
 ```
 
 or add
 
 ```
+<<<<<<< HEAD
 "almagestfraternite/yii-gong": "*"
+=======
+"almagestfraternite/yii2-gong": "*"
+>>>>>>> b04bbaca176c125a3313a177bfbd0c2ae01b97c4
 ```
 
 to the require section of your `composer.json` file.
