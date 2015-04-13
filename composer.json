@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
     "name": "almagestfraternite/yii-gong",
+=======
+    "name": "almagestfraternite/yii2-gong",
+>>>>>>> b04bbaca176c125a3313a177bfbd0c2ae01b97c4
     "description": "Workflow enhancement extension for yii",
     "type": "yii2-extension",
     "keywords": ["yii2","extension"],
@@ -15,8 +19,12 @@
     },
     "autoload": {
         "psr-4": {
+<<<<<<< HEAD
             "almagest\\gong\\widgets\\": "*"
             "almagest\\gong\\components\\": "*"
+=======
+            "almagest\\gong\\": ""
+>>>>>>> b04bbaca176c125a3313a177bfbd0c2ae01b97c4
         }
     }
 }
