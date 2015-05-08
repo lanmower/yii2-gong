@@ -1,0 +1,53 @@
+[
+  {
+    "uid": 1,
+    "content" : "Have you heard about the Web Components revolution?",
+    "title" : "Eric",
+    "favorite": false
+  },
+  {
+    "uid": 2,
+    "content" : "Loving this Polymer thing.",
+    "title" : "Rob",
+    "favorite": false
+  },
+    {
+    "uid": 3,
+    "content" : "So last year...",
+    "title" : "Dimitri",
+    "favorite": false
+  },
+  {
+    "uid": 4,
+    "content" : "Pretty sure I came up with that first.",
+    "title" : "Ada",
+    "favorite": false
+  },
+  {
+    "uid": 5,
+    "content" : "Yo, I heard you like components, so I put a component in your component.",
+    "title" : "Grace",
+    "images" : [],
+    "audios" : [],
+    "videos" : [],
+    "favorite": false
+  },
+  {
+    "uid": 6,
+    "content" : "Centralize, centrailize.",
+    "title" : "John",
+    "favorite": false
+  },
+  {
+    "uid": 7,
+    "content" : "Has anyone seen my cat?",
+    "title" : "Zelda",
+    "favorite": false
+  },
+  {
+    "uid": 8,
+    "content" : "Decentralize!",
+    "title" : "Norbert",
+    "favorite": false
+  }
+]
