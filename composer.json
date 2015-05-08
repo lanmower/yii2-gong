@@ -19,12 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-<<<<<<< HEAD
             "almagest\\gong\\widgets\\": "*"
             "almagest\\gong\\components\\": "*"
-=======
-            "almagest\\gong\\": ""
->>>>>>> b04bbaca176c125a3313a177bfbd0c2ae01b97c4
         }
     }
 }

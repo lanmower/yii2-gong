@@ -8,16 +8,8 @@ use almagest\gong\components\DynamicSearchRecord;
 use yii\helpers\VarDumper;
 
 class ModelController extends Behavior {
-	private $_modelClassname;
+	public $modelClassname;
 	public $parent = 'parent';
-	public function setModelClassname($classname) {
-		$this->_modelClassname = $classname;
-	}
-	public function getModelClassname() {
-		if (isset ( $this->_modelClassname ))
-			return $this->_modelClassname;
-		return str_replace ( 'Controller', '', get_class ( $this ) );
-	}
 	
 	/**
 	 * Creates a new model.
@@ -26,12 +18,13 @@ class ModelController extends Behavior {
 	 * @return mixed
 	 */
 	public function actionCreate() {
-		$model = DynamicRecord::forModel ( $this->_modelClassname );
+		$model = DynamicRecord::forModel ( $this->modelClassname );
 		if (isset ( $model->_conf ['behaviors'] ['parent'] )) {
 			$parentClass = $model->_conf ['behaviors'] ['parent'] ['className'];
 			$parent = DynamicRecord::forModel ( $parentClass )->findOne ( $_GET ['parent'] );
 			DynamicRecord::done ();
 			$model->parent_id = $_GET ['parent'];
+			if($model->hasAttribute('user_id')) $model->user_id = \Yii::$app->user->id;
 		}
 		if ($model->load ( \Yii::$app->request->post () ) && $model->save ()) {
 			$owner = $this->owner;
@@ -84,7 +77,7 @@ class ModelController extends Behavior {
 		$searchModel = DynamicSearchRecord::forModel ( $this->modelClassname );
 		$dataProvider = $searchModel->search ( \Yii::$app->request->queryParams );
 		
-		return $this->owner->render ( 'index', [ 
+		return $this->owner->render ( 'list', [ 
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider 
 		] );
@@ -111,7 +104,7 @@ class ModelController extends Behavior {
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
 	protected function findModel($id) {
-		$className = $this->getModelClassname ();
+		$className = $this->modelClassname;
 		$model = DynamicRecord::forModel ( $className );
 		
 		if (($model = $model::findOne ( $id )) !== null) {

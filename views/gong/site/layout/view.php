@@ -5,8 +5,8 @@ use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
 use yii\helpers\VarDumper;
 use yii\data\ActiveDataProvider;
-use almagest\gong\modules\view\widgets\ChildGrid;
 use yii\helpers\Url;
+use almagest\gong\widgets\ChildGrid;
 
 /* @var $this yii\web\View */
 /* @var $model almagest\gong\models\View */

@@ -19,13 +19,12 @@ class WidgetView extends \yii\base\Widget {
 			$this->id = $this->prefix.$this->item->id;
 			echo $this->item->prefix;
 			$class = substr ( $this->item->className, strrpos ( $this->item->className, '\\' ) + 1 );
-			//echo "<div id='$this->id' class='{$class}'>";
 			if(property_exists($className, '_contents')) {
 				$this->item->settings['_contents']=$this->contents;
 			}
 			if(property_exists($className, 'htmlOptions')) {
 				$this->addClass($this->item->settings['htmlOptions']['class'], $class);
-				$this->addClass($this->item->settings['htmlOptions']['id'], $this->id);
+				$this->item->settings['htmlOptions']['id'] = $this->id;
 			}
 			$className::begin ( $this->item->settings );
 		}
@@ -33,7 +32,6 @@ class WidgetView extends \yii\base\Widget {
 		if ($this->item->mode != 'begin') {
 			echo $this->item->content;
 			$className::end ();
-			//echo '</div>';
 			echo $this->item->suffix;
 		}
 	}

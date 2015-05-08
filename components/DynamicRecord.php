@@ -30,6 +30,14 @@ class DynamicRecord extends ActiveRecord {
 			] 
 	];
 	
+	public static function getDb() {
+		$conf = end(self::$_sconf);
+		if(isset($conf['db'])) {
+			return \Yii::$app->db;
+		}
+		return \Yii::$app->local;
+			}
+		
 	public function __construct($config = []) {
 		if (isset ( $config ['_conf'] )) {
 			self::$_sconf[] = $config ['_conf'];
@@ -48,8 +56,13 @@ class DynamicRecord extends ActiveRecord {
 		return $sconf['table'];
 	}
 	
+	
 	public static function done() {
 		array_pop(self::$_sconf);
+	}
+	
+	public function formName() {
+		return basename($this->_conf['class']);
 	}
 	
 	/**

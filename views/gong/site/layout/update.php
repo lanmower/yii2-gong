@@ -15,7 +15,7 @@ $this->params ['breadcrumbs'] [] = [
 		'label' => $model->name,
 		'url' => [ 
 				'layout',
-				'id' => $model->id 
+				'id' => $model->pk 
 		] 
 ];
 $this->params ['breadcrumbs'] [] = 'Update';

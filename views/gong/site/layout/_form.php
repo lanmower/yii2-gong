@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model almagest\gong\models\View */
@@ -8,7 +9,6 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="layout-form">
-
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255])?>

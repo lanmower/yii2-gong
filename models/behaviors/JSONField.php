@@ -6,6 +6,8 @@ use yii\base\Behavior;
 use yii\helpers\Json;
 use yii\helpers\VarDumper;
 use yii\db\ActiveRecord;
+use yii\base\InvalidParamException;
+use yii\web\HttpException;
 
 class JSONField extends Behavior {
 	public $field;
@@ -31,6 +33,7 @@ class JSONField extends Behavior {
 			$options = Json::decode ( $options, true );
 		} catch ( InvalidParamException $e ) {
 			$options = [];
+			throw new HttpException(500, 'Invalid JSON string: '.$this->owner->$field."\nModel name:".VarDumper::dumpAsString($this->owner->_conf['table'], 3, false));
 		}
 		if(!isset($options))$options = [];
 		$model = $this->owner;

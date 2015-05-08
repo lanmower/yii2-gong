@@ -10,7 +10,7 @@ use yii\base\Model;
 
 /**
  * DynamicSearchRecord
- * dynamic search record
+ * dynamic search records
  *
  * @property integer $id
  */
@@ -24,6 +24,14 @@ class DynamicSearchRecord extends DynamicRecord {
 		else
 			return parent::rules ();
 	}
+
+	public static function getDb() {
+		$conf = end(self::$_sconf);
+		if(isset($conf['db'])) {
+			return \Yii::$app->db;
+		}
+		return \Yii::$app->local;
+	}
 	
 	/**
 	 * @inheritdoc
@@ -33,6 +41,7 @@ class DynamicSearchRecord extends DynamicRecord {
 		return Model::scenarios ();
 	}
 	
+	
 	/**
 	 * Creates data provider instance with search query applied
 	 *
@@ -41,13 +50,12 @@ class DynamicSearchRecord extends DynamicRecord {
 	 * @return ActiveDataProvider
 	 */
 	public function search($params) {
-		$view = DynamicSearchRecord::forModel($this->_conf['class']);
-		$query = $view::find ();
+		$model = DynamicSearchRecord::forModel ( $this->_conf ['class'] );
+		$query = $model::find ();
 		
 		$dataProvider = new ActiveDataProvider ( [ 
 				'query' => $query 
 		] );
-		
 		$this->load ( $params );
 		
 		if (! $this->validate ()) {
@@ -57,27 +65,38 @@ class DynamicSearchRecord extends DynamicRecord {
 		}
 		
 		$query->andFilterWhere ( [ 
-				'id' => $this->id		] );
-		
-		/*$query->andFilterWhere ( [ 
-				'like',
-				'name',
-				$this->name 
-		] );*/
+				$this->primaryKey => $this->id 
+		] );
+		$rules = $this->rules ();
+		if (isset ( $rules [0] ) && isset ( $rules [0] [0] )) {
+			foreach ( $rules [0] [0] as $rule ) {
+				$query->andFilterWhere ( [ 
+						'like',
+						$rule,
+						$this->$rule 
+				] );
+			}
+		}
+		/*
+		 * $query->andFilterWhere ( [
+		 * 'like',
+		 * 'name',
+		 * $this->name
+		 * ] );
+		 */
 		
 		return $dataProvider;
 	}
-	
 	public static function forModel($name, $config = [], $controller = null) {
-		$model = DynamicRecord::forTable ( 'model', DynamicRecord::$JSON_SETTINGS )->findOne ( [
-				'name' => $name
+		$model = DynamicRecord::forTable ( 'model', DynamicRecord::$JSON_SETTINGS )->findOne ( [ 
+				'name' => $name 
 		] );
-	
+		
 		if (! isset ( $model ))
 			return false;
-		// the behavior will have converted json settings to a settings array
+			// the behavior will have converted json settings to a settings array
 		$settings = $model->settings;
-	
+		
 		if (! isset ( $modelName )) {
 			$modelName = explode ( "/", $name );
 			$modelName = end ( $modelName );
@@ -88,10 +107,9 @@ class DynamicSearchRecord extends DynamicRecord {
 		$settings ['_conf'] ['name'] = $modelName;
 		$settings ['_conf'] ['class'] = $name;
 		$settings ['_conf'] ['controller'] = $name;
-		DynamicRecord::done();
+		DynamicRecord::done ();
 		return self::forTable ( $model->table, $settings );
 	}
-	
 	public static function forTable($tableName, $config = []) {
 		$config ['_conf'] ['table'] = $tableName;
 		$ret = new DynamicSearchRecord ( $config );
