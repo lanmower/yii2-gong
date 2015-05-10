@@ -65,12 +65,10 @@ class UploadController extends Behavior {
 		if ($model) {
 			VarDumper::dump ( 'Found unprocessed file:' );
 			VarDumper::dump ( $model->filename );
-			try {
-				$type = $this->probe ( $model );
-			} catch ( RuntimeException $e ) {
-				echo $e->getMessage ();
-			}
-			if (isset($type))
+			
+			$type = $this->probe ( $model );
+			
+			if (isset ( $type ))
 				$this->handle ( $type, $model );
 			else {
 				// data file
@@ -91,25 +89,25 @@ class UploadController extends Behavior {
 			VarDumper::dump ( "$percentage %<br/>" );
 		} );
 		VarDumper::dump ( "Transcoding webm<br/>" );
-		$video->filters()->synchronize();//resize(new Dimension(640, 480), ResizeFilter::RESIZEMODE_INSET, true)->
+		$video->filters ()->synchronize (); // resize(new Dimension(640, 480), ResizeFilter::RESIZEMODE_INSET, true)->
 		$video->save ( $format, $file . '-video.webm' );
 		
 		$video = $ffmpeg->open ( $file );
 		$format = new X264 ();
-		$format->setAudioKiloBitrate(256);
+		$format->setAudioKiloBitrate ( 256 );
 		$format->on ( 'progress', function ($video, $format, $percentage) {
 			VarDumper::dump ( "$percentage %<br/>" );
 		} );
 		VarDumper::dump ( "Transcoding mp4<br/>" );
-		$video->filters()->synchronize();//resize(new Dimension(640, 480), ResizeFilter::RESIZEMODE_INSET, true)->
+		$video->filters ()->synchronize (); // resize(new Dimension(640, 480), ResizeFilter::RESIZEMODE_INSET, true)->
 		$video->save ( $format, $file . '-video.mp4' );
-
-		$format = new Ogg();
+		
+		$format = new Ogg ();
 		$format->on ( 'progress', function ($video, $format, $percentage) {
 			VarDumper::dump ( "$percentage %<br/>" );
 		} );
 		VarDumper::dump ( "Transcoding ogv<br/>" );
-		$video->filters()->resize(new Dimension(640, 480), ResizeFilter::RESIZEMODE_INSET, true)->synchronize();//
+		$video->filters ()->resize ( new Dimension ( 640, 480 ), ResizeFilter::RESIZEMODE_INSET, true )->synchronize (); //
 		$video->save ( $format, $file . '-video.ogv' );
 	}
 	public function handleAudio($file, $extension) {
@@ -172,31 +170,39 @@ class UploadController extends Behavior {
 	}
 	public function probe(DynamicRecord $model) {
 		$ffprobe = FFProbe::create ();
-		$streams = $ffprobe->streams ( $model->file );
-		VarDumper::dump ( $streams, 10, true );
-		$videos = $streams->videos ();
-		if ($videos->count () > 0) {
-			// visual
-			foreach ( $videos as $video ) {
-				if ($video->all ()['codec_name'] == 'png')
-					$image = true;
-				if ($video->all ()['codec_name'] == 'mjpeg')
-					$image = true;
-				if ($video->all ()['codec_name'] == 'gif')
-					$image = true;
-				if(!$video->all ()['disposition']['attached_pic']) {
-				if (isset ( $image ) ) {
-					return 'image';
-				}
-				return 'video';
+		
+		try {
+			$streams = $ffprobe->streams ( $model->file );
+			VarDumper::dump ( $streams, 10, true );
+		} catch ( RuntimeException $e ) {
+			echo $e->getMessage ();
+		}
+		if(isset($streams)) {
+			$videos = $streams->videos ();
+			if ($videos->count () > 0) {
+				// visual
+				foreach ( $videos as $video ) {
+					if ($video->all ()['codec_name'] == 'png')
+						$image = true;
+					if ($video->all ()['codec_name'] == 'mjpeg')
+						$image = true;
+					if ($video->all ()['codec_name'] == 'gif')
+						$image = true;
+					if (! $video->all ()['disposition']['attached_pic']) {
+						if (isset ( $image )) {
+							return 'image';
+						}
+						return 'video';
+					}
 				}
 			}
-		}
-		$audios = $streams->audios ();
-		if ($audios->count () > 0) {
-			foreach ( $audios as $audio ) {
-				if ($audio->all ()['codec_type'] == 'audio') {
-					return 'audio';
+			
+			$audios = $streams->audios ();
+			if ($audios->count () > 0) {
+				foreach ( $audios as $audio ) {
+					if ($audio->all ()['codec_type'] == 'audio') {
+						return 'audio';
+					}
 				}
 			}
 		}
@@ -224,15 +230,15 @@ class UploadController extends Behavior {
 				$model->content_type = $file->type;
 				$model->size = $file->size;
 				$model->filename = $file->name;
-				$dir = \Yii::getAlias('@web/../data/files/post');
-				if (! file_exists ( $dir))
+				$dir = \Yii::getAlias ( '@web/../data/files/post' );
+				if (! file_exists ( $dir ))
 					mkdir ( $dir, 0777, true );
 				
 				if ($model->save ())
 					$file->saveAs ( $dir . $model->id );
-				$model->file =  $dir . $model->id;
+				$model->file = $dir . $model->id;
 				$model->save ( false, [ 
-						'path' 
+						'file' 
 				] );
 				$json = [ 
 						"files" => [ 

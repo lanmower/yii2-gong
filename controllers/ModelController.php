@@ -47,11 +47,15 @@ class ModelController extends Behavior {
 	 * @return mixed
 	 */
 	public function actionDelete() {
+		
+		
 		$this->findModel ( $_GET ['id'] )->delete ();
+		
 		
 		return $this->owner->redirect ( [ 
 				'list' 
 		] );
+		
 	}
 	public function actionUpdate() {
 		$model = $this->findModel ( $_GET ['id'] );
