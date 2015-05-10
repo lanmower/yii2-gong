@@ -49,7 +49,9 @@ class ModelController extends Behavior {
 	public function actionDelete() {
 		
 		
-		$this->findModel ( $_GET ['id'] )->delete ();
+		$model = $this->findModel ( $_GET ['id'] );
+		$model->delete ();
+		if(isset($model->_conf['behaviors']['parent'])) return $this->owner->redirect([$model->_conf['behaviors']['parent']['className'].'/view', 'id'=>$model->parent->id]);
 		
 		
 		return $this->owner->redirect ( [ 
