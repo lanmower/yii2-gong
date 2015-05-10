@@ -224,13 +224,13 @@ class UploadController extends Behavior {
 				$model->content_type = $file->type;
 				$model->size = $file->size;
 				$model->filename = $file->name;
-				
-				if (! file_exists ( \Yii::$app->basePath . '/../data/files/post' ))
-					mkdir ( \Yii::$app->basePath . '/../data/files/post', 0777, true );
+				$dir = \Yii::getAlias('@web/../data/files/post');
+				if (! file_exists ( $dir))
+					mkdir ( $dir, 0777, true );
 				
 				if ($model->save ())
-					$file->saveAs ( '@web/../data/files/post/' . $model->id );
-				$model->file = '@web/../data/files/post/' . $model->id;
+					$file->saveAs ( $dir . $model->id );
+				$model->file =  $dir . $model->id;
 				$model->save ( false, [ 
 						'path' 
 				] );
