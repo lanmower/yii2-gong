@@ -230,7 +230,7 @@ class UploadController extends Behavior {
 				$model->content_type = $file->type;
 				$model->size = $file->size;
 				$model->filename = $file->name;
-				$dir = \Yii::getAlias ( '@web/../data/files/post' );
+				$dir = \Yii::getAlias ( '@app/data/files/post/' );
 				if (! file_exists ( $dir ))
 					mkdir ( $dir, 0777, true );
 				
