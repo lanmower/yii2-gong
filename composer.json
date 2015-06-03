@@ -13,7 +13,6 @@
     "require": {
         "yiisoft/yii2": "*",
         "2amigos/yii2-file-upload-widget": "~1.0",
-        "yurkinx/yii2-image": "dev-master",
 	    "php-ffmpeg/php-ffmpeg": "*",
 		"happyworm/jPlayer": "2.*",
 		"devgroup/yii2-jsoneditor": "*",
