@@ -1,5 +1,5 @@
 {
-    "name": "almagestfraternite/yii-gong",
+    "name": "lanmower/yii2-gong",
     "description": "Workflow enhancement extension for yii",
     "type": "yii2-extension",
     "keywords": ["yii2","extension"],
