@@ -15,7 +15,7 @@ $this->title = $model->name;
 $this->params ['breadcrumbs'] [] = [ 
 		'label' => 'Views',
 		'url' => [ 
-				'index' 
+				'list' 
 		] 
 ];
 $this->params ['breadcrumbs'] [] = $this->title;

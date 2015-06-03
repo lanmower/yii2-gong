@@ -18,7 +18,7 @@ class PostList extends Widget {
 	public $url;
 	
 	public function init() {
-		$this->htmlOptions['url'] = $this->url;
+		$this->htmlOptions['url'] = Url::to($this->url);
 		if(!isset($_assets)) {
 			self::$_asset = PostAssets::register ( $this->getView () );
 			$this->view->registerLinkTag([

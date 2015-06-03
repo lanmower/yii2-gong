@@ -6,7 +6,6 @@ use yii\base\Behavior;
 use almagest\gong\components\DynamicRecord;
 use almagest\gong\components\DynamicSearchRecord;
 use yii\helpers\VarDumper;
-use almagest\gong\models\UploadForm;
 use yii\helpers\Json;
 use yii\web\UploadedFile;
 use yii\web\HttpException;
@@ -25,6 +24,8 @@ use FFMpeg\Format\Video\WebM;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Coordinate\FrameRate;
 use FFMpeg\Filters\Video\ResizeFilter;
+use yii\helpers\Inflector;
+use yii\web\Response;
 
 class UploadController extends Behavior {
 	public $modelClassname;
@@ -177,7 +178,7 @@ class UploadController extends Behavior {
 		} catch ( RuntimeException $e ) {
 			echo $e->getMessage ();
 		}
-		if(isset($streams)) {
+		if (isset ( $streams )) {
 			$videos = $streams->videos ();
 			if ($videos->count () > 0) {
 				// visual
@@ -207,20 +208,50 @@ class UploadController extends Behavior {
 			}
 		}
 	}
+	
+	/**
+	 * Uploads the file and update database
+	 */
+	public function actionSirTrevorUpload() {
+		$file = UploadedFile::getInstanceByName ( 'attachment[file]' );
+		
+		
+		$result = $this->upload($file);
+		
+		$response = new Response ();
+		$response->setStatusCode ( 200 );
+		$response->format = Response::FORMAT_JSON;
+		if ($result ['success'] === true) {
+			$response->setStatusCode ( 200 );
+			$response->data = [ 
+					'file' => [ 
+							'url' => $result['files'][0]['url'],
+							'media_id' => $result ['files'][0]['id'] 
+					] 
+			];
+			$response->send ();
+		} else {
+			$response->statusText = $result ['message'];
+			$response->setStatusCode ( 500 );
+			$response->send ();
+			Yii::$app->end ();
+		}
+	}
 	public function actionUpload() {
+		$parent = DynamicRecord::forModel ( $parentClass )->findOne ( $_GET ['parent'] );
+		$file = UploadedFile::getInstance ( $parent, 'file' );
+		DynamicRecord::done ();
+		if (! $parent)
+			throw new HttpException ( 404, 'Not found' );
+		$ret = $this->upload ( $file );
+		return Json::encode ( $ret );
+	}
+	public function upload($file) {
 		$model = DynamicRecord::forModel ( $this->modelClassname );
 		if (isset ( $model->_conf ['behaviors'] ['parent'] )) {
 			$parentClass = $model->_conf ['behaviors'] ['parent'] ['className'];
-			$parent = DynamicRecord::forModel ( $parentClass )->findOne ( $_GET ['parent'] );
-			$file = UploadedFile::getInstance ( $parent, 'file' );
-			DynamicRecord::done ();
-			if (! $parent)
-				throw new HttpException ( 404, 'Not found' );
 		}
-		
-		$upload = new UploadForm ();
-		// DynamicRecord::done();
-		
+				
 		if (\Yii::$app->request->isPost) {
 			// die(VarDumper::dump($file, 10, true));
 			if ($file) {
@@ -229,7 +260,7 @@ class UploadController extends Behavior {
 				$model->parent_id = $_GET ['parent'];
 				$model->content_type = $file->type;
 				$model->size = $file->size;
-				$model->filename = $file->name;
+				$model->filename = Inflector::slug ( str_replace ( $file->extension, '', $file->name ) ) . '.' . $file->extension;
 				$dir = \Yii::getAlias ( '@app/data/files/post/' );
 				if (! file_exists ( $dir ))
 					mkdir ( $dir, 0777, true );
@@ -249,13 +280,14 @@ class UploadController extends Behavior {
 										] ),
 										"size" => $file->size,
 										"name" => $file->name,
-										'file' => $file 
+										"id" => $model->id,
 								] 
-						] 
+						] ,
+						'success'=>true
 				];
 				
 				$owner = $this->owner;
-				return Json::encode ( $json );
+				return $json;
 			}
 		}
 	}

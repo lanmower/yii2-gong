@@ -3,67 +3,60 @@
 <link rel="import" href="post-card.html">
 
 <polymer-element name="post-list" attributes="show url">
-  <template>
-    <style>
-    :host {
-      display: block;
-      width: 100%;
-    }
-    post-card {
-      margin-bottom: 30px;
-    }
-    </style>
+<template>
+<style>
+:host {
+	display: block;
+	width: 100%;
+}
 
-    <post-service id="service" posts="{{posts}}" url="{{url}}">
-    </post-service>
-    
-    <div layout vertical center>
+post-card {
+	margin-bottom: 30px;
+}
+</style>
 
-      <template repeat="{{post in posts}}">
-        <post-card>
-          <img src="{{post.image}}" width="70" height="70">
-          <h2>{{post.title}}</h2>
-          <p>{{post.content}}</p>
-          <div style="display:inline-block">
-          <h3>Image Files:</h3>
-	   		<template repeat="{{file in post.files.image}}">
-	   		  <div>
-	   		  {{file.filename}}
-	   		  <img src="{{url}}/download?id={{file.id}}">
-	   		  </div>
-	      	</template>
-	      	</div>
-          <div style="display:inline-block">
-          <h3>Video Files:</h3>
-	   		<template repeat="{{file in post.files.video}}">
-	   		  <div>
-	   		  {{file.filename}}
-	   		  </div>
-	      	</template>
-	      	</div>
-          <div style="display:inline-block">
-          <h3>Audio Files:</h3>
-	   		<template repeat="{{file in post.files.audio}}">
-	   		  <div>
-	   		  {{file.filename}}
-	   		  </div>
-	      	</template>
-	      	</div>
-          <div style="display:inline-block">
-          <h3>Data Files:</h3>
-	   		<template repeat="{{file in post.files.data}}">
-	   		  <div>
-	   		  {{file.filename}}
-	   		  </div>
-	      	</template>
-	      	</div>
-        </post-card>
-      </template>
-      
-    </div>
+<post-service id="service" posts="{{posts}}" url="{{url}}">
+</post-service>
 
-  </template>
-  <script>
-  Polymer({});
-  </script>
-</polymer-element>
+<div layout vertical center>
+
+	<template repeat="{{post in posts}}">
+	<post-card html="{{post.html}}">
+		<img src="{{post.image}}" width="70"
+		height="70">
+	<h2>{{post.title}}</h2>
+	<div style="display: inline-block">
+		<h3>Image Files:</h3>
+		<template repeat="{{file in post.files.image}}">
+		<div>
+			{{file.filename}} <img src="{{url}}/download?id={{file.id}}">
+		</div>
+		</template>
+	</div>
+	<div style="display: inline-block">
+		<h3>Video Files:</h3>
+		<template repeat="{{file in post.files.video}}">
+		<div>{{file.filename}}</div>
+		</template>
+	</div>
+	<div style="display: inline-block">
+		<h3>Audio Files:</h3>
+		<template repeat="{{file in post.files.audio}}">
+		<div>{{file.filename}}</div>
+		</template>
+	</div>
+	<div style="display: inline-block">
+		<h3>Data Files:</h3>
+		<template repeat="{{file in post.files.data}}">
+		<div>{{file.filename}}</div>
+		</template>
+	</div>
+	</post-card> </template>
+
+</div>
+
+</template> <script>
+	Polymer('post-list', {
+
+	});
+</script> </polymer-element>

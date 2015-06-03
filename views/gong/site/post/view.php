@@ -31,17 +31,23 @@ $this->params ['breadcrumbs'] [] = $this->title;
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])?>
         <?=Html::a ( 'Delete', [ 'delete','id' => $model->id ], [ 'class' => 'btn btn-danger','data' => [ 'confirm' => 'Are you sure you want to delete this item?','method' => 'post' ] ] )?>
     </p>
-
-    <?=DetailView::widget ( [ 'model' => $model,'attributes' => [ 'id','title' ] ] )?>
-    
-	<?= Upload::widget(['model'=>$model,'url'=>['upload', 'parent'=>$model->id]]); ?>
+ 
+    <?=DetailView::widget ( [ 'model' => $model,'attributes' => [ 'title' ] ] )?>
     <?php
 				if (isset ( $model->_conf ['behaviors'] ['children'] )) {
 					$className = $model->_conf ['behaviors'] ['children'] ['className'];
+					echo Html::a ( 'Create', [ 
+							$className . '/create',
+							'parent' => $model->id 
+					], [ 
+							'class' => 'btn btn-success' 
+					] );
 					echo ChildGrid::widget ( [ 
-							'model' => $model 
+							'model' => $model,
+							'columns' => ['filename',[ 'class' => 'yii\grid\ActionColumn', 'controller' => DynamicRecord::forModel($className)->_conf['controller'] ]]
 					] );
 				}
 				?>    
+        
 
 </div>

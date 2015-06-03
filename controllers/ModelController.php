@@ -33,8 +33,9 @@ class ModelController extends Behavior {
 					'id' => $model->id 
 			] );
 		} else {
-			return $this->owner->render ( 'create', [ 
-					'model' => $model 
+			return $this->owner->render ( 'create.json', [ 
+					'model' => $model,
+					'id' => $model->id
 			] );
 		}
 	}
@@ -83,7 +84,7 @@ class ModelController extends Behavior {
 		$searchModel = DynamicSearchRecord::forModel ( $this->modelClassname );
 		$dataProvider = $searchModel->search ( \Yii::$app->request->queryParams );
 		
-		return $this->owner->render ( 'list', [ 
+		return $this->owner->render ( 'list.json', [ 
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider 
 		] );

@@ -7,61 +7,61 @@ use almagest\gong\widgets\WidgetList;
 use yii\helpers\VarDumper;
 use yii\web\HttpException;
 use almagest\gong\components\DynamicRecord;
+use yii\base\InvalidParamException;
+use yii\helpers\FileHelper;
+use almagest\gong\widgets\SirGong;
+use devgroup\jsoneditor\JsoneditorAsset;
+use almagest\gong\widgets\PostCard;
+use yii\base\ErrorException;
+use yii\helpers\Html;
 
 /**
- * The Dynamic Controller can render database-stored views
- * @author James Vos
+ * dynamic views
  *
+ * @author James Vos
+ *        
  */
 class DynamicController extends Controller {
 	function render($view, $params = []) {
-		extract ( $params, EXTR_OVERWRITE );
-		if(!$this->id) $this->id = 'site';
-		$contents = WidgetList::draw ( DynamicRecord::forModel ( 'gong/site/view' ),$this->id.'/'.$view );
-		DynamicRecord::done();
-		if (!$contents) {
-			$contents = $this->getView ()->render ( $view, $params, $this );
-		}
-		return $this->renderLayout ( $contents );
-	}
-
-	private function findLayoutAlias() {
-		$module = $this->module;
-		if (is_string ( $this->layout )) {
-			$layout = $this->layout;
-		} elseif ($this->layout === null) {
-			while ( $module !== null && $module->layout === null ) {
-				$module = $module->module;
-			}
-			if ($module !== null && is_string ( $module->layout )) {
-				$layout = $module->layout;
-			}
+		$viewFile = \Yii::getAlias ( $this->getViewPath () . '/' . $view );
+		if(!file_exists($viewFile) && file_exists($viewFile.'.'.$this->getView()->defaultExtension)) return parent::render($view, $params);
+		try {
+			$contents = file_get_contents ( $viewFile );
+		} catch ( InvalidParamException $e ) {
+			$data = '{}';
+			$viewFile = \Yii::getAlias ( $this->getViewPath () . '/' . $view );
+			file_put_contents ( $viewFile, $data );
+			return parent::render ( $view, $params );
+		} catch ( ErrorException $e ) {
+			$data = '{}';
+			$viewFile = \Yii::getAlias ( $this->getViewPath () . '/' . $view );
+			file_put_contents ( $viewFile, $data );
+			return parent::render ( $view, $params );
 		}
 		
-		if (! isset ( $layout )) {
-			return false;
+		$widget = '<form>' . SirGong::widget ( [ 
+				'name' => 'view',
+				'value' => $contents 
+		] ) . Html::input ( 'submit', 'submit', 'submit', [ 
+				'onclick' => '$(".js-container").each(function() {$(this).prev().val( $(this).data("editor").getText());});' 
+		] ) . '</form>';
+		
+		if (isset ( $_GET ['view'] )) {
+			file_put_contents ( $viewFile, $_GET ['view'] );
+			$this->redirect ( \Yii::$app->urlManager->baseUrl . '/' . $this->getRoute () );
 		}
-		return $layout;
-	}
-	
-	function renderLayout($contents) {
-		$dynamicLayout = true;
-		if(isset($this->staticLayout) && $this->staticLayout == true) $dynamicLayout = false;
-		$layoutFile = $this->findLayoutFile ( $this->getView () );
-		$layoutAlias = $this->findLayoutAlias ( $this->getView () );
-		if ($layoutFile !== false) {
-			if($dynamicLayout) $layout = WidgetList::draw ( DynamicRecord::forModel ( 'gong/site/layout' ), $layoutAlias, $contents );
-			DynamicRecord::done();
-			if (isset($layout) && $layout) {
-				return $this->getView ()->renderFile ( '@app/views/layouts/dynamic.php', [ 
-						'content' => $layout 
-				], $this );
-			}
-			return $this->getView ()->renderFile ( $layoutFile, [ 
-					'content' => $contents 
-			], $this );
-		} else
-			return $contents;
+		if ($contents == '{}' || isset ( $_GET ['edit_view'] )) {
+			JsoneditorAsset::register ( $this->view );
+			return parent::renderContent ( '<div class="card" style="	display: block;
+			position: relative;
+			background-color: white;
+			padding: 20px;
+			width: 100%;
+			font-size: 1.2rem;
+			font-weight: 300;
+			margin-bottom:10px">' . $widget . "</div>" );
+		}
+		return parent::render ( $view, $params );
 	}
 }
 

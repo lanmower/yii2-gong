@@ -57,6 +57,7 @@ class JsonController extends Behavior {
 		foreach ($dataProvider->getModels() as $model) {
 			$data = $model->attributes;
 			$data['files'] = ['audio'=>[],'video'=>[],'image'=>[]];
+			$data['html'] = $model->settings;
 			foreach($model->children as $child) {
 				$attributes = $child->attributes;
 				if($child->type == 'audio') $data['files']['audio'][] = $attributes;

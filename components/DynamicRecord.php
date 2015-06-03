@@ -113,15 +113,14 @@ class DynamicRecord extends ActiveRecord {
 		
 		return self::forTable ( $form->tableName, $config );
 	}
+	
 	public static function forModel($name, $config = [], $controller = null) {
-		$model = DynamicRecord::forTable ( 'model', DynamicRecord::$JSON_SETTINGS )->findOne ( [ 
-				'name' => $name 
-		] );
+		$model = \Yii::$app->params['model'][$name];
 		
 		if (! isset ( $model ))
 			return false;
 			// the behavior will have converted json settings to a settings array
-		$settings = $model->settings;
+		$settings = $model['settings'];
 		
 		if (! isset ( $modelName )) {
 			$modelName = explode ( "/", $name );
@@ -134,7 +133,7 @@ class DynamicRecord extends ActiveRecord {
 		$settings ['_conf'] ['class'] = $name;
 		$settings ['_conf'] ['controller'] = $name;
 		DynamicRecord::done();
-		return self::forTable ( $model->table, $settings );
+		return self::forTable ( $model['table'], $settings );
 	}
 	public static function forTable($tableName, $config = []) {
 		$config ['_conf'] ['table'] = $tableName;

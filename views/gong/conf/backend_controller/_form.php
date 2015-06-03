@@ -18,10 +18,12 @@ use almagest\gong\components\DynamicRecord;
     
     ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 32])?>
+    <?= $form->field($model, 'path')->textInput(['maxlength' => 32])?>
 
-    <?= $form->field($model, 'table')->textarea(['rows' => 6])?>
-
+    <?= $form->field($model, 'menu_link')->textarea()?>
+    
+    <?= $form->field($model, 'icon')->textarea()?>
+    
     <?= Jsoneditor::widget(    [
         'editorOptions' => [
             'modes' => ['code', 'form', 'text', 'tree', 'view'], // available modes
