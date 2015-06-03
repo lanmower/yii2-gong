@@ -15,13 +15,14 @@
         "almagestfraternite/yii2-polymer": "dev-master",
         "2amigos/yii2-file-upload-widget": "~1.0",
         "yurkinx/yii2-image": "dev-master",
-        "perminder-klair/yii2-sir-trevor-js": "*",
 	    "php-ffmpeg/php-ffmpeg": "*",
-		"happyworm/jPlayer": "2.*",	   "devgroup/yii2-jsoneditor": "*"
+		"happyworm/jPlayer": "2.*",
+		"devgroup/yii2-jsoneditor": "*",
+		"perminder-klair/yii2-sir-trevor-js": "*"
     },
     "autoload": {
         "psr-4": {
-            "almagest\\gong\\widgets\\": "*"
+            "almagest\\gong\\widgets\\": "*",
             "almagest\\gong\\components\\": "*"
         }
     }
