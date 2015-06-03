@@ -17,13 +17,8 @@
 	    "php-ffmpeg/php-ffmpeg": "*",
 		"happyworm/jPlayer": "2.*",
 		"devgroup/yii2-jsoneditor": "*",
-		"perminder-klair/yii2-sir-trevor-js": "*",
-        "almagestfraternite/yii2-polymer": "dev-master"
+		"perminder-klair/yii2-sir-trevor-js": "*"
     },
-	"repositories": [{
-	        "type": "vcs",
-	        "url": "git@github.com:lanmower/polymer.git"
-	}],
     "autoload": {
         "psr-4": {
             "almagest\\gong\\widgets\\": "*",
