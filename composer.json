@@ -13,11 +13,12 @@
     "require": {
         "yiisoft/yii2": "*",
         "2amigos/yii2-file-upload-widget": "~1.0",
+        "yurkinx/yii2-image": "*",
 	    "php-ffmpeg/php-ffmpeg": "*",
 		"happyworm/jPlayer": "2.*",
 		"devgroup/yii2-jsoneditor": "*",
 		"perminder-klair/yii2-sir-trevor-js": "*",
-        "lanmower/polymer": "dev-master"
+        "almagestfraternite/yii2-polymer": "dev-master"
     },
 	"repositories": [{
 	        "type": "vcs",
