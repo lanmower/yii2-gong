@@ -12,17 +12,17 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "almagestfraternite/yii2-polymer": "dev-master",
         "2amigos/yii2-file-upload-widget": "~1.0",
         "yurkinx/yii2-image": "dev-master",
 	    "php-ffmpeg/php-ffmpeg": "*",
 		"happyworm/jPlayer": "2.*",
 		"devgroup/yii2-jsoneditor": "*",
-		"perminder-klair/yii2-sir-trevor-js": "*"
+		"perminder-klair/yii2-sir-trevor-js": "*",
+        "lanmower/polymer": "dev-master"
     },
 	"repositories": [{
-	        "type": "git",
-	        "url": "https://github.com/lanmower/polymer.git"
+	        "type": "vcs",
+	        "url": "git@github.com:lanmower/polymer.git"
 	}],
     "autoload": {
         "psr-4": {
