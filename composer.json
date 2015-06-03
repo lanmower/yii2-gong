@@ -20,6 +20,10 @@
 		"devgroup/yii2-jsoneditor": "*",
 		"perminder-klair/yii2-sir-trevor-js": "*"
     },
+	"repositories": [{
+	        "type": "git",
+	        "url": "https://github.com/lanmower/polymer.git"
+	}],
     "autoload": {
         "psr-4": {
             "almagest\\gong\\widgets\\": "*",
